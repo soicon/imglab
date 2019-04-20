@@ -163,7 +163,7 @@ function attachShapeToImg(id, type, bbox, points){
     return shape;
 }
 
-function addImgToStore(imgname, size) {
+function addImgToStore(imgname, size,shape) {
     // If we already have this image data in localstorage,
     // don't initialize its properties
     if(!labellingData[imgname]){
@@ -176,7 +176,7 @@ function addImgToStore(imgname, size) {
                 "width": size.width,
                 "height": size.height
             },
-            "shapes": [],
+            "shapes": shape,
             "shapeIndex": 0,   // Used to generate new ids for copy pasted shapes
             "pointIndex": 0,    // Used to generate new ids for feature points
             "featurePointSize": 3 // Stores featurePointSize per image

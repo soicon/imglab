@@ -6,14 +6,12 @@
     </style>
         <div style="width: 50px;  text-align: center; padding: 10px;">
                 <label class="btn-bs-file">
-                    <i class="icon-picture" style="font-size: 1.5em"></i>
-                    <input id="browseImages" type="file" class="filebutton" accept="image/*"  onchange= { readImageFiles }  multiple/>
+                    <i class="icon-download" style="font-size: 1.5em" onclick={ fetchData } ></i>
+                    <!-- <i class="icon-download" style="font-size: 1.5em" ></i>
+                    <input id="browseImages" type="file" class="filebutton" accept="image/*"  onchange= { readImageFiles }  multiple/> -->
                 </label>
 
-                <label class="btn-bs-file">
-                    <i class="icon-folder-open-empty" style="font-size: 1.5em"></i>
-                    <input type="file" id="image_folder" webkitdirectory mozdirectory msdirectory odirectory directory onchange={ readImageFiles } >
-                </label>
+
         </div>
         <div id="leftpaddle" class="align-middle"  style="height: 100%;">
             <span style="width: 50px; height: 90px;">
@@ -38,6 +36,9 @@
     <script>
         var tag = this;
         tag.readImageFiles = readImageFiles;
+        tag.fetchData = fetchData;
+        tag.getMeta = getMeta;
+        tag.toDataUrl = toDataUrl;
         tag.readImageFile = readImageFile;
         tag.slideleft = slideleft;
         tag.slideright = slideright;
@@ -81,9 +82,9 @@
                 })
         });
 
-        this.on('updated', () => {
-            //$("#thumbnail_0").click(); as this triggers before images are uploaded it cuase issue. Load it with an interval
-        })
+        // this.on('updated', () => {
+        //     //$("#thumbnail_0").click(); as this triggers before images are uploaded it cuase issue. Load it with an interval
+        // })
 
         function readImageFiles(e) {
             var input = e.srcElement || e.target;
@@ -93,10 +94,93 @@
                 }
             }
         }
+        function toDataUrl(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    callback(reader.result);
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        }
+        function getMeta(element,url,i,callback){   
+            var img = new Image();
+            img.addEventListener("load", function(){
+                element.size={
+                    width : this.naturalWidth,
+                    height : this.naturalHeight,
+                    scaledWidth: this.naturalWidth,
+                    scaledHeight: this.naturalHeight,
+                    imageScale: 1
+                }
+                var array=[]
+                var shape = []
+                var tempShape = {
+                    attributes: [],
+                    bbox: null,
+                    defaultZoomScale: 1,
+                    featurePoints: [],
+                    id: null,
+                    label: "test",
+                    points: null,
+                    tags: [],
+                    type: "rect",
+                    zoomScale: 1
+                }
+                console.log(element.name)
+                element.figureCoor?array.push(JSON.parse(element.figureCoor)):null
+                element.formulaCoor?array.push(JSON.parse(element.formulaCoor)):null
+                element.textCoor?array.push(JSON.parse(element.textCoor)):null
+                array.forEach((element,index) => {
+                    tempShape.points=[element[1], element[0],  element[3]-element[1], element[2]-element[0]],
+                    tempShape.id= 'AreaZone'+tag.index
+                    tempShape.bbox={x: element[1], y: element[0], w:  element[3]-element[1], h: element[2]-element[0], width: element[3]-element[1], height: element[2]-element[0]}
+                    console.log(tempShape)
+                    shape.push(tempShape)
+                });
+                toDataUrl(url, function(myBase64) {
+
+                element.src = myBase64
+
+                
+                addImgToStore(element.name, element.size,shape);
+                tag.thumbnails.push(element);
+                tag.index++
+                callback()
+            });
+  
+            });
+            img.src = url;
+            console.log(this)
+            
+        }
+
+        function fetchData(){
+            fetch('http://localhost:18080/api/image-sources')
+            .then(response => response.json())
+            .then(data => {
+               console.log(data)
+                data.forEach((element,i) => {
+                    console.log(i)
+                    var url = 'http://localhost:18080/api/download/'+element.name
+                    this.getMeta(element,url,i,this.update)
+
+
+                });
+            })
+            .catch(error => console.error(error))
+        }
 
         tag.thumbnails = [];
+        tag.imgSize = [];
+        tag.index = 0;
         tag.currentIndex = 0;
         this.thumbnailWidth= this.opts.thumbnail_width || "80px";
+
 
         function readImageFile(f) {
             if(f.type.startsWith("image")){
@@ -108,15 +192,16 @@
                     };
                     updateDimentions(e.target.result, imgData);
                     tag.thumbnails.push(imgData);
-
-                    this.trigger("uploadimages");
+                    // this.trigger("uploadimages");
                 }
                 reader.onloadend = e => {
+                    console.log(this)
                     this.update();
                 }
                 reader.readAsDataURL(f);
             }
         }
+        
 
         function updateDimentions(imgFileSrc, imageDataObject) {
             var img = new Image();
@@ -170,6 +255,7 @@
         }
 
         function loadIntoWorkArea(e){
+            console.log(e)
             imgSelected = tag.thumbnails[e.item.index];
             riot.mount("workarea",{ img : imgSelected });
         }

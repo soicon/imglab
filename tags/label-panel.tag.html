@@ -83,7 +83,10 @@
         </div>
         <div ref="label-data" class="mb-2 mt-2">
             Label Name
-            <input type="text" class="form-text w-100" value="{ targetShape.label }" onchange={updateLabel} placeholder="Label the shape, Eg: face, clock ..">
+            <select id="category-select-box" class="form-text"  onChange={updateLabel}>
+                <option each={category in suggestedCategories} selected={category === targetShape.label} >{category}</option>
+            </select>
+            <!-- <input type="text" class="form-text w-100" value="{ targetShape.label }" onchange={updateLabel} placeholder="Label the shape, Eg: face, clock .."> -->
         </div>
         <div ref="label-data" class="mb-2 mt-2">
             <attributes-list attributes={targetShape.attributes}></attributes-list>
@@ -119,6 +122,7 @@
         }
 
         tag.updateLabel = function(e){
+            console.log(e)
             tag.targetShape.label = e.target.value;
         }
 

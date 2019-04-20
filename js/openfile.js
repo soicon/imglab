@@ -22,7 +22,6 @@ function readDataFile(e){
     var input = e.target || e.srcElement;
     if (input.files && input.files[0]) {
         var dataFile = input.files[0];
-        
         var reader = new FileReader();
         reader.onload = function (e) {
             /* if(pointFile.name.endsWith(".pts")){
@@ -44,6 +43,8 @@ function readDataFile(e){
     }
     input.value = null;
 }
+
+
 
 var loadJSONFile = function(data){
     labellingData = cocoFormater.fromCOCO(JSON.parse(data));

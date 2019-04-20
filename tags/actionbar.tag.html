@@ -1,13 +1,39 @@
 <actionbar>
     <style>
         #actionbar{
-            height: 40px;
+            height: 80px;
             width: 100%;
             outline: 1px solid grey;
             padding: 1px 5px;
+            display:flex;
+            justify-content:flex-end;
         }
-    </style>
-    <div id="actionbar" class="form-inline"></div>
+        .tool-button{
+            text-align: center;
+            margin: 14px 30px ;
+            font-size: 0.9em;
+
+        }
+        .tool-icon{
+            width: 40%;
+            margin: 3px 0px;
+            font-size: 1.5em;
+        }
+        .tool-selected{
+            background: coral;
+        }
+        .tool-button:not(.tool-selected):hover{
+            background: grey;
+        }
+    </style> 
+    <div id="actionbar" class="form-inline">
+        <div class="tool-button" onclick={ selectme }>
+            <label class="btn-bs-file">
+                <i class="icon-print" style="font-size: 1.5em" onclick={ fetchData } ></i>
+            </label>
+            <div>Save</div>
+        </div>
+    </div>
     <script>
         this.on('mount',function(){
             for(var a_i in this.opts.actions){

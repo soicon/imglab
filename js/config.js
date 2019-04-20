@@ -164,7 +164,7 @@ var pluginsStore = {
     }
 }
 
-var suggestedCategories = ["dog", "cat", "car", "vehicle", "truck", "animal", "building", "person"];
+var suggestedCategories = ["figure", "formula", "text"];
 var suggestedTags = [];
 var suggestedAttributes = {
     "gender" : ["male", "female", "other"],
