@@ -29,7 +29,7 @@
     <div id="actionbar" class="form-inline">
         <div class="tool-button" onclick={ selectme }>
             <label class="btn-bs-file">
-                <i class="icon-print" style="font-size: 1.5em" onclick={ fetchData } ></i>
+                <i class="icon-print" style="font-size: 1.5em" onclick={ saveAsPascalVOC } ></i>
             </label>
             <div>Save</div>
         </div>
@@ -41,5 +41,23 @@
                 riot.mount("action-"+this.opts.actions[a_i]);
             }
         });
+
+        function saveAsPascalVOC(){
+            if(!imgSelected){
+                showSnackBar("This option is applicable on the image loaded in workarea.");
+                return;
+            }else if(labellingData[ imgSelected.name ].shapes.length === 0){
+                showSnackBar("You need to label the currently loaded image.");
+                return;
+            }else{
+                
+                var data = pascalVocFormater.toPascalVOC();
+                askFileName(Object.keys(labellingData[ imgSelected.name ].shapes.length ).length + "_pvoc_imglab.xml", function(fileName){
+                    analytics_reportExportType("pascal_voc");
+                    download(data, fileName, "text/xml", "utf-8");
+                });
+            }
+
+            }
     </script>
 </actionbar>

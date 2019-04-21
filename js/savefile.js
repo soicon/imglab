@@ -123,10 +123,34 @@ function saveAsPascalVOC(){
         return;
     }else{
         var data = pascalVocFormater.toPascalVOC();
-        askFileName(Object.keys(labellingData[ imgSelected.name ].shapes.length ).length + "_pvoc_imglab.xml", function(fileName){
-            analytics_reportExportType("pascal_voc");
-            download(data, fileName, "text/xml", "utf-8");
-        });
+        imgSelected.xmlInfo = data
+        delete imgSelected.src
+        delete imgSelected.size
+        console.log(imgSelected)
+        $.ajax({
+            type: "PUT", //HTTP VERB
+            url: "http://183.91.11.89:18080/api/image-sources", //URL
+            dataType: 'json', //What type of response you expect back from the server
+            contentType: 'application/json', //What type of data you are trying to send
+            data: JSON.stringify(imgSelected),
+            success:function(data, textStatus) {
+                alert('successful');
+            }
+        
+        })
+        // fetch('http://183.91.11.89:18080/api/image-sources', {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Accept': 'application/json, text/plain, */*',
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(imgSelected)
+        //     }).then(res=>res.json())
+        //     .then(res => console.log(res));
+        // askFileName(Object.keys(labellingData[ imgSelected.name ].shapes.length ).length + "_pvoc_imglab.xml", function(fileName){
+        //     analytics_reportExportType("pascal_voc");
+        //     download(data, fileName, "text/xml", "utf-8");
+        // });
     }
 
 }

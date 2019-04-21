@@ -146,10 +146,7 @@
                     shape.push(tempShape)
                 });
                 toDataUrl(url, function(myBase64) {
-
                 element.src = myBase64
-
-                
                 addImgToStore(element.name, element.size,shape);
                 tag.thumbnails.push(element);
                 tag.index++
@@ -158,21 +155,19 @@
   
             });
             img.src = url;
-            console.log(this)
+           
             
         }
 
         function fetchData(){
-            fetch('http://localhost:18080/api/image-sources')
+            fetch('http://183.91.11.89:18080/api/image-sources')
             .then(response => response.json())
             .then(data => {
                console.log(data)
                 data.forEach((element,i) => {
                     console.log(i)
-                    var url = 'http://localhost:18080/api/download/'+element.name
+                    var url = 'http://183.91.11.89:18080/api/download/'+element.name
                     this.getMeta(element,url,i,this.update)
-
-
                 });
             })
             .catch(error => console.error(error))
