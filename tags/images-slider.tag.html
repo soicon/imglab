@@ -94,12 +94,12 @@
                 }
             }
         }
-        function toDataUrl(url, callback) {
+        function toDataUrl(url, returnResult) {
             var xhr = new XMLHttpRequest();
             xhr.onload = function() {
                 var reader = new FileReader();
                 reader.onloadend = function() {
-                    callback(reader.result);
+                    returnResult(reader.result);
                 }
                 reader.readAsDataURL(xhr.response);
             };
@@ -108,9 +108,12 @@
             xhr.send();
         }
         function getMeta(element,url,i,callback){   
-            var img = new Image();
-            img.addEventListener("load", function(){
-                element.size={
+            var imgAns = new Image();
+            var imgQues = new Image();
+            var quesElement = { ...element };
+            var ansElement  = { ...element };
+            imgAns.addEventListener("load", function(){
+                ansElement.size={
                     width : this.naturalWidth,
                     height : this.naturalHeight,
                     scaledWidth: this.naturalWidth,
@@ -121,52 +124,106 @@
                 var shape = []
 
                 var temp = []
-                element.figureCoor?temp= array.concat(JSON.parse(element.figureCoor)):null
-                element.formulaCoor?temp=  temp.concat(JSON.parse(element.formulaCoor)):null
-                element.textCoor?temp = temp.concat(JSON.parse(element.textCoor)):null
-                console.log(temp)
-                temp.forEach((element,index) => {
-                    console.log(element)
+                console.log(ansElement)
+
+                ansElement.ansFigureCoor && ansElement.ansFigureCoor != ""?temp= array.concat(JSON.parse(ansElement.ansFigureCoor)):null
+
+                ansElement.ansFormulaCoor && ansElement.ansFormulaCoor != ""?temp=  temp.concat(JSON.parse(ansElement.ansFormulaCoor)):null
+
+                ansElement.ansTextCoor && ansElement.ansTextCoor != ""?temp = temp.concat(JSON.parse(ansElement.ansTextCoor)):null
+
+                temp.forEach((ansElement,index) => {
                     var tempShape = {
                     attributes: [],
                     bbox: null,
                     defaultZoomScale: 1,
                     featurePoints: [],
                     id: null,
-                    label: "test",
+                    label: "PT",
+                    points: null,
+                    tags: [],
+                    type: "rect",
+                    zoomScale: 1
+                }
+                    tempShape.points=[ansElement[1], ansElement[0],  ansElement[3]-ansElement[1], ansElement[2]-ansElement[0]],
+                    tempShape.id= 'AnsAreaZone'+tag.indexAns
+                    tag.indexAns++
+                    tempShape.bbox={x: ansElement[1], y: ansElement[0], w:  ansElement[3]-ansElement[1], h: ansElement[2]-ansElement[0], width: ansElement[3]-ansElement[1], height: ansElement[2]-ansElement[0]}
+                    shape.push(tempShape)
+                });
+                toDataUrl(url+ansElement.imgAnswerName, function(myBase64) {
+                    ansElement.src = myBase64
+                    ansElement.name = ansElement.imgAnswerName
+                    addImgToStore(ansElement.name, ansElement.size,shape);
+                    tag.thumbnails.push(ansElement);
+                    console.log(tag.thumbnails)
+                    
+                    callback()
+                });
+  
+            });
+
+            imgQues.addEventListener("load", function(){
+                quesElement.size={
+                    width : this.naturalWidth,
+                    height : this.naturalHeight,
+                    scaledWidth: this.naturalWidth,
+                    scaledHeight: this.naturalHeight,
+                    imageScale: 1
+                }
+                var array=[]
+                var shape = []
+                var temp = []
+                quesElement.quesFigureCoor&& quesElement.quesFigureCoor != ""?temp= array.concat(JSON.parse(quesElement.quesFigureCoor)):null
+
+                quesElement.quesFormulaCoor&& quesElement.quesFormulaCoor != ""?temp=  temp.concat(JSON.parse(quesElement.quesFormulaCoor)):null
+
+                quesElement.quesTextCoor&& quesElement.quesTextCoor != ""?temp = temp.concat(JSON.parse(quesElement.quesTextCoor)):null
+
+                temp.forEach((element,index) => {
+                    var tempShape = {
+                    attributes: [],
+                    bbox: null,
+                    defaultZoomScale: 1,
+                    featurePoints: [],
+                    id: null,
+                    label: "PT",
                     points: null,
                     tags: [],
                     type: "rect",
                     zoomScale: 1
                 }
                     tempShape.points=[element[1], element[0],  element[3]-element[1], element[2]-element[0]],
-                    tempShape.id= 'AreaZone'+tag.index
+                    tempShape.id= 'QuesAreaZone'+tag.indexQues
+                    tag.indexQues++
                     tempShape.bbox={x: element[1], y: element[0], w:  element[3]-element[1], h: element[2]-element[0], width: element[3]-element[1], height: element[2]-element[0]}
-                    console.log(tempShape)
                     shape.push(tempShape)
                 });
-                toDataUrl(url, function(myBase64) {
-                element.src = myBase64
-                addImgToStore(element.name, element.size,shape);
-                tag.thumbnails.push(element);
-                tag.index++
-                callback()
-            });
+                toDataUrl(url+quesElement.imgQuestionName, function(myBase64) {
+                    quesElement.src = myBase64
+                    quesElement.name = quesElement.imgQuestionName
+                    addImgToStore(quesElement.name, quesElement.size,shape);
+                    tag.thumbnails.push(quesElement);
+                    console.log(tag.thumbnails)
+                    
+                    callback()
+                });
   
             });
-            img.src = url;
+            imgAns.src = url+element.imgAnswerName;
+            imgQues.src = url+element.imgQuestionName;
            
             
         }
 
         function fetchData(){
-            fetch('http://183.91.11.89:18080/api/image-sources')
+            fetch('http://localhost:18080/api/image-sources')
             .then(response => response.json())
             .then(data => {
                console.log(data)
                 data.forEach((element,i) => {
                     console.log(i)
-                    var url = 'http://183.91.11.89:18080/api/download/'+element.name
+                    var url = 'http://localhost:18080/api/download/'
                     this.getMeta(element,url,i,this.update)
                 });
             })
@@ -175,7 +232,8 @@
 
         tag.thumbnails = [];
         tag.imgSize = [];
-        tag.index = 0;
+        tag.indexAns = 0;
+        tag.indexQues = 0;
         tag.currentIndex = 0;
         this.thumbnailWidth= this.opts.thumbnail_width || "80px";
 

@@ -164,7 +164,7 @@ var pluginsStore = {
     }
 }
 
-var suggestedCategories = ["figure", "formula", "text"];
+var suggestedCategories = [{name:"Phương trình",value:"PT"}, {name:"Hình học",value:"HH"},{name:"Hệ phương trình",value:"HPT"}];
 var suggestedTags = [];
 var suggestedAttributes = {
     "gender" : ["male", "female", "other"],
