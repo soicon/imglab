@@ -217,13 +217,13 @@
         }
 
         function fetchData(){
-            fetch('http://localhost:18080/api/image-sources')
+            fetch('http://http://183.91.11.89:18080/api/image-sources')
             .then(response => response.json())
             .then(data => {
                console.log(data)
                 data.forEach((element,i) => {
                     console.log(i)
-                    var url = 'http://localhost:18080/api/download/'
+                    var url = 'http://http://183.91.11.89:18080/api/download/'
                     this.getMeta(element,url,i,this.update)
                 });
             })
