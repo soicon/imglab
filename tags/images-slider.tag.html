@@ -108,60 +108,9 @@
             xhr.send();
         }
         function getMeta(element,url,i,callback){   
-            var imgAns = new Image();
             var imgQues = new Image();
             var quesElement = { ...element };
-            var ansElement  = { ...element };
-            imgAns.addEventListener("load", function(){
-                ansElement.size={
-                    width : this.naturalWidth,
-                    height : this.naturalHeight,
-                    scaledWidth: this.naturalWidth,
-                    scaledHeight: this.naturalHeight,
-                    imageScale: 1
-                }
-                var array=[]
-                var shape = []
 
-                var temp = []
-                console.log(ansElement)
-
-                ansElement.ansFigureCoor && ansElement.ansFigureCoor != ""?temp= array.concat(JSON.parse(ansElement.ansFigureCoor)):null
-
-                ansElement.ansFormulaCoor && ansElement.ansFormulaCoor != ""?temp=  temp.concat(JSON.parse(ansElement.ansFormulaCoor)):null
-
-                ansElement.ansTextCoor && ansElement.ansTextCoor != ""?temp = temp.concat(JSON.parse(ansElement.ansTextCoor)):null
-
-                temp.forEach((ansElement,index) => {
-                    var tempShape = {
-                    attributes: [],
-                    bbox: null,
-                    defaultZoomScale: 1,
-                    featurePoints: [],
-                    id: null,
-                    label: "PT",
-                    points: null,
-                    tags: [],
-                    type: "rect",
-                    zoomScale: 1
-                }
-                    tempShape.points=[ansElement[1], ansElement[0],  ansElement[3]-ansElement[1], ansElement[2]-ansElement[0]],
-                    tempShape.id= 'AnsAreaZone'+tag.indexAns
-                    tag.indexAns++
-                    tempShape.bbox={x: ansElement[1], y: ansElement[0], w:  ansElement[3]-ansElement[1], h: ansElement[2]-ansElement[0], width: ansElement[3]-ansElement[1], height: ansElement[2]-ansElement[0]}
-                    shape.push(tempShape)
-                });
-                toDataUrl(url+ansElement.imgAnswerName, function(myBase64) {
-                    ansElement.src = myBase64
-                    ansElement.name = ansElement.imgAnswerName
-                    addImgToStore(ansElement.name, ansElement.size,shape);
-                    tag.thumbnails.push(ansElement);
-                    console.log(tag.thumbnails)
-                    
-                    callback()
-                });
-  
-            });
 
             imgQues.addEventListener("load", function(){
                 quesElement.size={
@@ -210,20 +159,20 @@
                 });
   
             });
-            imgAns.src = url+element.imgAnswerName;
             imgQues.src = url+element.imgQuestionName;
            
             
         }
 
         function fetchData(){
-            fetch('http://183.91.11.89:18080/api/image-sources')
+            tag.thumbnails = [];
+            fetch('http://localhost:18080/api/image-sources?status.equals=0')
             .then(response => response.json())
             .then(data => {
                console.log(data)
                 data.forEach((element,i) => {
                     console.log(i)
-                    var url = 'http://183.91.11.89:18080/api/download/'
+                    var url = 'http://localhost:18080/api/download/'
                     this.getMeta(element,url,i,this.update)
                 });
             })

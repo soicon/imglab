@@ -130,17 +130,17 @@ function saveAsPascalVOC(){
             imgSelected.ansXml = data
         }
         imgSelected.status = 2
-        delete imgSelected.src
-        delete imgSelected.size
         console.log(imgSelected)
         $.ajax({
             type: "PUT", //HTTP VERB
-            url: "http://183.91.11.89:18080/api/image-sources?status.equals=0", //URL
+            url: "http://localhost:18080/api/image-sources", //URL
             dataType: 'json', //What type of response you expect back from the server
             contentType: 'application/json', //What type of data you are trying to send
             data: JSON.stringify(imgSelected),
             success:function(data, textStatus) {
                 alert('successful');
+                // var attrName = imgSelected.name
+                // delete labellingData[attrName]
             },
             fail: function(xhr, textStatus, errorThrown){
                 alert('Failed');

@@ -17,8 +17,8 @@ var pascalVocFormater = {
         <database>Unknown</database>
     </source>
     <size>
-        <width>${imgSelected.size.width}</width>
-        <height>${imgSelected.size.height}</height>
+        <width>${!imgSelected?imgSelected.size.width:null}</width>
+        <height>${!imgSelected?imgSelected.size.height:null}</height>
         <depth>3</depth>
     </size>
     <segmented>0</segmented>`
