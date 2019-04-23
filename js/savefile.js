@@ -135,7 +135,7 @@ function saveAsPascalVOC(){
         console.log(imgSelected)
         $.ajax({
             type: "PUT", //HTTP VERB
-            url: "http://183.91.11.89:18080/api/image-sources", //URL
+            url: "http://183.91.11.89:18080/api/image-sources?status.equals=0", //URL
             dataType: 'json', //What type of response you expect back from the server
             contentType: 'application/json', //What type of data you are trying to send
             data: JSON.stringify(imgSelected),
