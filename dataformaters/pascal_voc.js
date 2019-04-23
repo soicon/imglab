@@ -33,10 +33,10 @@ var pascalVocFormater = {
         <truncated>0</truncated>
         <difficult>0</difficult>
         <bndbox>
-            <xmin>${shape.bbox.x}</xmin>
-            <ymin>${shape.bbox.y}</ymin>
-            <xmax>${shape.bbox.x + shape.bbox.w}</xmax>
-            <ymax>${shape.bbox.y + shape.bbox.h}</ymax>
+            <xmin>${parseInt(shape.bbox.x,10)}</xmin>
+            <ymin>${parseInt(shape.bbox.y,10)}</ymin>
+            <xmax>${parseInt((shape.bbox.x + shape.bbox.w),10)}</xmax>
+            <ymax>${parseInt((shape.bbox.y + shape.bbox.h),10)}</ymax>
         </bndbox>
     </object>`;
         }

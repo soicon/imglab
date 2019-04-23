@@ -1,4 +1,47 @@
 riot.tag2('actionbar', '<div id="actionbar"> </div>', 'actionbar #actionbar,[data-is="actionbar"] #actionbar{ height: 40px; width: 100%; border: 1px solid grey; }', '', function(opts) {
+    function saveAsPascalVOC(){
+
+        if(!imgSelected){
+            showSnackBar("This option is applicable on the image loaded in workarea.");
+            return;
+        }else if(labellingData[ imgSelected.name ].shapes.length === 0){
+            showSnackBar("You need to label the currently loaded image.");
+            return;
+        }else{
+            var data = pascalVocFormater.toPascalVOC();
+            data = data.replace("<?xml version=\"1.0\"?>","")
+            if(imgSelected.name.includes("CH")){
+                imgSelected.quesXml = data
+            }else{
+                imgSelected.ansXml = data
+            }
+            imgSelected.status = 2
+            $.ajax({
+                type: "PUT", //HTTP VERB
+                url: "http://183.91.11.89:18080/api/image-sources", //URL
+                dataType: 'json', //What type of response you expect back from the server
+                contentType: 'application/json', //What type of data you are trying to send
+                data: JSON.stringify(imgSelected),
+                success:function(data, textStatus) {
+                    console.log(data)
+                    alert('successful');
+                    // var attrName = imgSelected.name
+                    // delete labellingData[attrName]
+                },
+                fail: function(xhr, textStatus, errorThrown){
+                    console.log(textStatus)
+                    alert('Failed');
+                 }
+            
+            })
+    
+            // askFileName(Object.keys(labellingData[ imgSelected.name ].shapes.length ).length + "_pvoc_imglab.xml", function(fileName){
+            //     analytics_reportExportType("pascal_voc");
+            //     download(data, fileName, "text/xml", "utf-8");
+            // });
+        }
+    
+    }
 });
 riot.tag2('facepp', '<input onchange="{saveKey}" class="form-control" type="text" name="api_key" id="fpp_api_key" placeholder="api_key" riot-value="{pluginsStore.facepp.key}"> <input onchange="{saveSecret}" class="form-control" type="text" name="api_secret" id="fpp_api_secret" placeholder="api_secret" riot-value="{pluginsStore.facepp.secret}"> <br> <input onclick="{fetchFpp}" class="btn fppBtn" type="button" name="faceppBtn" id="faceppBtn" value="Plot with Face++">', 'facepp .fppBtn,[data-is="facepp"] .fppBtn{ background: #17a2b8; width: 100%;color: white; }', '', function(opts) {
         this.saveKey = function(e){

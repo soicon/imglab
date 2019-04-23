@@ -115,45 +115,45 @@ function saveAsCOCO(){
  */
 function saveAsPascalVOC(){
 
-    if(!imgSelected){
-        showSnackBar("This option is applicable on the image loaded in workarea.");
-        return;
-    }else if(labellingData[ imgSelected.name ].shapes.length === 0){
-        showSnackBar("You need to label the currently loaded image.");
-        return;
-    }else{
-        var data = pascalVocFormater.toPascalVOC();
-        data = data.replace("<?xml version=\"1.0\"?>","")
-        if(imgSelected.name.includes("CH")){
-            imgSelected.quesXml = data
-        }else{
-            imgSelected.ansXml = data
-        }
-        imgSelected.status = 2
-        $.ajax({
-            type: "PUT", //HTTP VERB
-            url: "http://183.91.11.89:18080/api/image-sources", //URL
-            dataType: 'json', //What type of response you expect back from the server
-            contentType: 'application/json', //What type of data you are trying to send
-            data: JSON.stringify(imgSelected),
-            success:function(data, textStatus) {
-                console.log(data)
-                alert('successful');
-                // var attrName = imgSelected.name
-                // delete labellingData[attrName]
-            },
-            fail: function(xhr, textStatus, errorThrown){
-                console.log(textStatus)
-                alert('Failed');
-             }
+    // if(!imgSelected){
+    //     showSnackBar("This option is applicable on the image loaded in workarea.");
+    //     return;
+    // }else if(labellingData[ imgSelected.name ].shapes.length === 0){
+    //     showSnackBar("You need to label the currently loaded image.");
+    //     return;
+    // }else{
+    //     var data = pascalVocFormater.toPascalVOC();
+    //     data = data.replace("<?xml version=\"1.0\"?>","")
+    //     if(imgSelected.name.includes("CH")){
+    //         imgSelected.quesXml = data
+    //     }else{
+    //         imgSelected.ansXml = data
+    //     }
+    //     imgSelected.status = 2
+    //     $.ajax({
+    //         type: "PUT", //HTTP VERB
+    //         url: "http://183.91.11.89:18080/api/image-sources", //URL
+    //         dataType: 'json', //What type of response you expect back from the server
+    //         contentType: 'application/json', //What type of data you are trying to send
+    //         data: JSON.stringify(imgSelected),
+    //         success:function(data, textStatus) {
+    //             console.log(data)
+    //             alert('successful');
+    //             // var attrName = imgSelected.name
+    //             // delete labellingData[attrName]
+    //         },
+    //         fail: function(xhr, textStatus, errorThrown){
+    //             console.log(textStatus)
+    //             alert('Failed');
+    //          }
         
-        })
+    //     })
 
         // askFileName(Object.keys(labellingData[ imgSelected.name ].shapes.length ).length + "_pvoc_imglab.xml", function(fileName){
         //     analytics_reportExportType("pascal_voc");
         //     download(data, fileName, "text/xml", "utf-8");
         // });
-    }
+    //}
 
 }
 
