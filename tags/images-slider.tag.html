@@ -166,15 +166,19 @@
 
         function fetchData(){
             tag.thumbnails = [];
-            fetch('http://localhost:18080/api/image-sources?status.equals=0')
+            fetch('http://183.91.11.89:18080/api/image-sources?status.equals=0')
             .then(response => response.json())
             .then(data => {
                console.log(data)
-                data.forEach((element,i) => {
-                    console.log(i)
-                    var url = 'http://localhost:18080/api/download/'
-                    this.getMeta(element,url,i,this.update)
-                });
+               if(data.length>0){
+                    data.forEach((element,i) => {
+                        console.log(i)
+                        var url = 'http://183.91.11.89:18080/api/download/'
+                        this.getMeta(element,url,i,this.update)
+                    });
+                }else{
+                    alert("Đã hết ảnh cần xử lý")
+                }
             })
             .catch(error => console.error(error))
         }

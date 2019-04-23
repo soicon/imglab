@@ -66,7 +66,7 @@ var cocoFormater = {
 
                     labellingData[ image.file_name ].shapes.push({
                         "id": id+idNumber.toString(),
-                        "label": "unlabelled",
+                        "label": "PT",
                         "attributes": [],
                         "tags": [],
                         "type": type,

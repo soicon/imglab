@@ -72,7 +72,7 @@ function detachPointByIndex(shapeId, pointIndex){
 function scaleShape(id, type, bbox, points, scale) {
     return {
         "id" : id,
-        "label" : "unlabelled",
+        "label" : "PT",
         "type" : type,
         "points": scaleShapePoints(points, scale, type),
         "bbox" : scaleBbox(bbox, scale) || {
